@@ -6,6 +6,7 @@
 #include<sys/shm.h>
 #include<sys/sem.h>
 #include<sys/types.h>
+#include<locale.h>
 #define PERMISOS 0644
 #define N 5
 
@@ -18,6 +19,7 @@ int lee_hilo(char mecom[], char ses);
 
 char sesion;
 int main(){
+    setlocale(LC_CTYPE,"spanish");
     int sel=1,bol,semaforo_mutex, mutex2;
     char conf='a';
     key_t llave1, llave2;
@@ -25,14 +27,12 @@ int main(){
     semaforo_mutex=Crea_semaforo(llave1,1);
     int semid=semget(llave2,1,IPC_CREAT|PERMISOS);
     while(sel == 1){
-        printf("Bienvenido a ESCOMLaris\nIngresa el numero de boletos que desea
-        comprar:");
+        printf("Bienvenido a Volaris\nPor favor ingresa el numero de boletos que deseas comprar:");
         scanf("%d", &bol);
         down(semaforo_mutex);
         sesion=Entra_al_bufer();
         up(semaforo_mutex);
-        //Se crea un archivo vacio nuevo con touch para crear un nuevo semaforo con el hilo del
-        servidor
+        //Se crea un archivo vacio nuevo con touch para crear un nuevo semaforo con el hilo del servidor
         char comand[]= {'t','o','u','c','h',' ',sesion,'\0'};
         char comand2[]= {'t','o','u','c','h',' ',sesion,'1','\0'};
         char arch[]={sesion,'\0'};
@@ -42,16 +42,16 @@ int main(){
         escribe_hilo(bol, mecom, sesion);
         int i= lee_hilo(mecom, sesion);
         if(i == 0){
-            printf("Solicitud Exitosa!\nFelicidades, has adquirido tus %d boletos\n", bol);
+            printf("Solicitud Exitosa!\n Felicidades, has adquirido tus %d boletos\n", bol);
             sel = 0;
         }
         else if(i > 0){
-            printf("Ha ocurrido un error, intentalo mÃ¡s tarde.\n");
+            printf("Ha ocurrido un error, intentalo más tarde.\n");
             sel = 0;
         }
         else{
-            printf("Lo sentimos, no hay disponilidad de tantos boletos en estos
-            momentos.\n");
+            printf("Lo sentimos, no hay disponilidad de tantos boletos en estos momentos.\n");
+            exit(1);
         }
         //Se eliminan los archivos ocupados como canales y memoria compartida con el hilo
         char command3[]={'r','m',' ',sesion,'\0'};
