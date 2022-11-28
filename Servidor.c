@@ -8,6 +8,7 @@
 #include<sys/types.h>
 #include<pthread.h>
 #include<unistd.h>
+#include<locale.h>
 #define PERMISOS 0644
 //#define N 5
 
@@ -28,6 +29,7 @@ int disp = 20;
 
 int main()
 {
+    setlocale(LC_CTYPE,"spanish");
     char ses_aux, sesion=sesion_ser;
     char command[]={'i','p','c','r','m',' ','-','a','\0'};
     system(command);
@@ -83,7 +85,7 @@ void Entra_al_bufer(char sesion)
         sleep(1);
     }
     *dato=sesion;
-    printf("\nSesion aÃ±adida: %c\n",*dato);
+    printf("\nSesion añadida: %c\n",*dato);
 }
 char obten_sesion()
 {
@@ -141,7 +143,7 @@ void *Hilo(void *arg)
     if((disp-i)<0){
         printf("No hay disponibilidad de boletos.");
         escribe_hilo(-1, mecom, *sesion);
-        //pthread_exit(NULL);
+        //exit(1);
     }else{
         printf("Si hay disponibilidad de boletos.");
         escribe_hilo(0, mecom, *sesion);
